@@ -204,7 +204,7 @@ jobs:
             export plugin="$plugin"
             export zipname="$zipname"
             if [ ! -f "defaults.txt" ]; then
-              find . -maxdepth 1 -type d,f -name '*' -exec bash -c '
+              find . -mindepth 1 -maxdepth 1 -type d -exec bash -c '
                 for object do
                   outdir="/tmp/output"
                   name="$(basename $object)"
