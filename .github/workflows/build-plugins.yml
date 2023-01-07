@@ -225,9 +225,11 @@ jobs:
                     ls $outdir/$plugin/$name
                     moved="$?"
                     echo "moved: $moved"
+                    pushd $workingdir
                     if [ "$moved" = "0" ]; then
-                      zip -r $zipname $workingdir/$plugin/$name
+                      zip -r $zipname $plugin/$name
                     fi
+                    popd
                   fi
                 done
               ' find-sh {} + ;
