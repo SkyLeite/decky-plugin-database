@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - backend-builder
+      - fix-ci
     paths:
       - "plugins/**"
       - ".github/workflows/build-plugins.yml"
