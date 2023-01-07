@@ -225,9 +225,8 @@ jobs:
                     ls $outdir/$plugin/$name
                     moved="$?"
                     echo "moved: $moved"
-                    cd $workingdir
                     if [ "$moved" = "0" ]; then
-                      zip -r $zipname $plugin/$name
+                      zip -r $zipname $workingdir/$plugin/$name
                     fi
                   fi
                 done
