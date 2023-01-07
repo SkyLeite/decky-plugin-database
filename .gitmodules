@@ -92,3 +92,6 @@
 [submodule "plugins/VolumeMixer-decky"]
 	path = plugins/VolumeMixer-decky
 	url = https://github.com/isiah-lloyd/VolumeMixer-decky
+[submodule "plugins/decky-wine-manager"]
+	path = plugins/decky-wine-manager
+	url = git@github.com:SkyLeite/decky-wine-manager.git
