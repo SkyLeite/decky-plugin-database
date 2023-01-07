@@ -179,6 +179,7 @@ jobs:
           hasbin="$(find $plugin -maxdepth 1 -type d -name 'bin' -printf '%P\n')"
           # Check if plugin has a defaults folder, if so, add "default" contents to root dir
           hasdefaults="$(find $plugin -maxdepth 1 -type d -name 'defaults' -printf '%P\n')"
+
           if [[ "${{ secrets.STORE_ENV }}" == "testing" ]]; then
             long_sha="${{ github.event.pull_request.head.sha || github.sha }}"
             sha=$(echo $long_sha | cut -c1-7)
@@ -199,11 +200,13 @@ jobs:
           fi
 
           if [ ! -z "$hasdefaults" ]; then
+            echo "has defaults"
             export workingdir=$PWD
             cd $plugin/defaults
             export plugin="$plugin"
             export zipname="$zipname"
             if [ ! -f "defaults.txt" ]; then
+              echo "no defaults.txt"
               find . -mindepth 1 -maxdepth 1 -type d -exec bash -c '
                 for object do
                   outdir="/tmp/output"
@@ -221,6 +224,7 @@ jobs:
                 done
               ' find-sh {} + ;
             else
+              echo "found defaults.txt"
               if [[ ! "$plugin" =~ "plugin-template" ]]; then
                 printf "${red}defaults.txt found in defaults folder, please remove either defaults.txt or the defaults folder.${end}\n"
               else
