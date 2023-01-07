@@ -44,10 +44,6 @@ jobs:
           plugins/*
           .github/workflows/build-plugins.yml
 
-    - name: Cache Docker images
-      if: ${{ !env.ACT }}
-      uses: satackey/action-docker-layer-caching@46d2c640b1d8ef50d185452ad6fb324e6bd1d052
-
     - name: Login to GitHub Container Registry
       run: |
         echo $GITHUB_TOKEN | docker login ghcr.io -u SteamDeckHomebrew --password-stdin
@@ -207,15 +203,28 @@ jobs:
             export zipname="$zipname"
             if [ ! -f "defaults.txt" ]; then
               echo "no defaults.txt"
-              find . -mindepth 1 -maxdepth 1 -type d -exec bash -c '
+              found=$(find . -mindepth 1 -maxdepth 1 -type d,f)
+              echo $found
+              echo "defaults dir"
+              ls -la
+              test -e lib
+              echo "I haven't done anything yet. Does lib exist? $?"
+
+              find . -mindepth 1 -maxdepth 1 -type d,f -exec bash -c '
                 for object do
                   outdir="/tmp/output"
                   name="$(basename $object)"
+
+                  echo "file: $object // name: $name"
+                  test -e $object
+                  echo "Does $object exist? I think $?"
                   # echo "object = $object, name = $name"
                   if [ -e "$object" ]; then
+                    echo "Object exists"
                     sudo mv "$object" $outdir/$plugin/$name
+                    ls $outdir/$plugin/$name
                     moved="$?"
-                    # echo "moved = $moved"
+                    echo "moved: $moved"
                     cd $workingdir
                     if [ "$moved" = "0" ]; then
                       zip -r $zipname $plugin/$name
