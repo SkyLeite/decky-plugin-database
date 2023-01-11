@@ -70,6 +70,7 @@ jobs:
     - name: Detect edited files/plugins
       id: list-files
       run: |
+        echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
         pushd plugins
         files=()
         if [[ "${{ steps.changed-files.outputs.all_changed_files }}" == *".github/workflows/build-plugins.yml"* || "${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.upload) && 'true' }}" == "true" ]]; 
