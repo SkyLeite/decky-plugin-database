@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - separate-deployment
       - backend-builder
     paths:
       - "plugins/**"
@@ -20,9 +21,6 @@ jobs:
   build:
     name: Build updated plugins
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload))) && 'env' || 'testing_env' }}    
-
     steps:
     - name: Checkout
       if: ${{ !env.ACT }}
@@ -247,6 +245,11 @@ jobs:
         name: plugins
         path: /tmp/zips/*
 
+  deploy:
+    environment:
+      name: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload))) && 'env' || 'testing_env' }}
+    runs-on: ubuntu-latest
+    steps:
     - name: Upload plugins to store
       if: ${{ !env.ACT }}
       id: upload-plugins
