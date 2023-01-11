@@ -108,3 +108,6 @@
 [submodule "plugins/DeckMTP"]
 	path = plugins/DeckMTP
 	url = https://github.com/dafta/DeckMTP
+[submodule "plugins/decky-wine-manager"]
+	path = plugins/decky-wine-manager
+	url = git@github.com:SkyLeite/decky-wine-manager.git
