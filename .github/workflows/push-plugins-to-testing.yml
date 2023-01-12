@@ -9,9 +9,6 @@ on:
 jobs:
   upload:
     runs-on: ubuntu-latest
-    needs:
-      - find_plugins
-      - build
     if: >
       github.event.workflow_run.conclusion == 'success'
     environment:
