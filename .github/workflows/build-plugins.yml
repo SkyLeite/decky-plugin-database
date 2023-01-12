@@ -32,7 +32,6 @@ jobs:
         if: ${{ !env.ACT }}
         uses: actions/checkout@8230315d06ad95c617244d2f265d237a1682d445
         with:
-          fetch-depth: 9
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Find plugins to be built
@@ -51,6 +50,7 @@ jobs:
           else
             if [[ $isPr == "true" ]]; then
               echo "PR detected. beep boop"
+              git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
               # Diff with the ref of the target branch
               REF=${{ github.base_ref }}
             else
