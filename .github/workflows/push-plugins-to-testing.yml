@@ -1,4 +1,4 @@
-name: Push approved plugin to testing
+run-name : Deploy workflow ${{ github.event.workflow_run.name }} (${{ github.event.workflow_run.id }}) by @${{ github.event.workflow_run.actor.login }}
 
 on:
   workflow_run:
