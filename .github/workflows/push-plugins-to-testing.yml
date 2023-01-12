@@ -1,0 +1,81 @@
+name: Push approved plugin to testing
+
+on:
+  workflow_run:
+    workflows: ["Build plugins"]
+    types:
+      - completed
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    needs:
+      - find_plugins
+      - build
+    if: >
+      github.event.workflow_run.conclusion == 'success'
+    environment:
+      name: testing_env
+    steps:
+    - name: 'Download artifact'
+      uses: actions/github-script@v3.1.0
+      with:
+        script: |
+          const fs = require('node:fs/promises');
+          const workspace = "${{ github.workspace }}";
+
+          const artifacts = await github.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{ github.event.workflow_run.id }},
+          });
+
+          // Download all plugins
+          const promises = artifacts.data.artifacts.map(async (artifact) =>
+            const download = github.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+            });
+
+            await fs.writeFile(`${workspace}/${artifact.name}.zip`, Buffer.from(download.data));
+          );
+
+          await Promise.all(promises);
+
+    - name: Unzip plugins
+      run: |
+        mkdir -p ${{ github.workspace }}/plugins
+        cd ${{ github.workspace }}/plugins
+        unzip ${{ github.workspace }}/*.zip
+
+    - name: Upload plugin to store
+      if: ${{ !env.ACT }}
+      id: upload-plugins
+      run: |
+        shopt -s dotglob
+        for plugin in ${{ github.workspace }}/plugins do
+          zipname=$(basename ${plugin}).zip
+
+          metadata=$(unzip -p $zipname $plugin/plugin.json)
+          packagejson=$(unzip -p $zipname $plugin/package.json)
+
+          donotupload=$(jq -r '.publish | any(.tags[] == "dnu"; .)' <<< $metadata)
+          if [[ "$donotupload" == "false" ]]; then
+            curl -X POST \
+            -H "Authorization: ${SUBMIT_AUTH_KEY}" \
+            -F "name=$(jq -r '.name' <<< $metadata)" \
+            -F "author=$(jq -r '.author' <<< $metadata)" \
+            -F "description=$(jq -r '.publish.description' <<< $metadata)" \
+            -F "tags=$(jq -r '.publish.tags|join(",")' <<< $metadata)" \
+            -F "version_name=$(jq -r '.version' <<< $packagejson)" \
+            -F "image=$(jq -r '.publish.image' <<< $metadata)" \
+            -F "file=@${zipname}" ${STORE_URL}/__submit
+          else
+            echo "Plugin is designated as 'do not upload', likely a template or CI demonstration."
+          fi
+        done
+      env:
+        SUBMIT_AUTH_KEY: ${{ secrets.SUBMIT_AUTH_KEY }}
+        STORE_URL: ${{ secrets.STORE_URL }}
