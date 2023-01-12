@@ -28,7 +28,7 @@ jobs:
           });
 
           // Download all plugins
-          const promises = artifacts.data.artifacts.map(async (artifact) =>
+          const promises = artifacts.data.artifacts.map(async (artifact) => {
             const download = github.actions.downloadArtifact({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -37,7 +37,7 @@ jobs:
             });
 
             await fs.writeFile(`${workspace}/${artifact.name}.zip`, Buffer.from(download.data));
-          );
+          });
 
           await Promise.all(promises);
 
