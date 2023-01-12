@@ -41,6 +41,8 @@ jobs:
           isPr: ${{ github.event_name == 'pull_request' }}
           buildAll: ${{ inputs.build_all }}
         run: |
+          echo $isPr
+          echo "${{ github.event_name }}"
           workflow_changed=$(git diff --name-only --submodule=diff $REF -- .github/workflows/build-plugins.yml)
           if [[ $workflow_changed || $buildAll == "true" ]]; then
             # Workflow changed. Build everything to be safe
