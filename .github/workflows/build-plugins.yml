@@ -38,11 +38,9 @@ jobs:
       - name: Find plugins to be built
         id: find_plugins
         env:
-          isPr: ${{ github.event_name == 'pull_request' }}
+          isPr: ${{ github.event_name == 'pull_request_target' }}
           buildAll: ${{ inputs.build_all }}
         run: |
-          echo $isPr
-          echo "${{ github.event_name }}"
           workflow_changed=$(git diff --name-only --submodule=diff $REF -- .github/workflows/build-plugins.yml)
           if [[ $workflow_changed || $buildAll == "true" ]]; then
             # Workflow changed. Build everything to be safe
