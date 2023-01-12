@@ -38,18 +38,23 @@ jobs:
       - name: Find plugins to be built
         id: find_plugins
         env:
-          isPr: ${{ github.event_name == 'pull_request_target' }}
+          isPr: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
           buildAll: ${{ inputs.build_all }}
         run: |
+          echo $isPr
+          echo $(git status)
+          echo $(git diff --name-only --submodule=diff main)
           workflow_changed=$(git diff --name-only --submodule=diff $REF -- .github/workflows/build-plugins.yml)
           if [[ $workflow_changed || $buildAll == "true" ]]; then
             # Workflow changed. Build everything to be safe
             PLUGINS=$(find ./plugins -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-1]')
           else
             if [[ $isPr == "true" ]]; then
+              echo "PR detected. beep boop"
               # Diff with the ref of the target branch
               REF=${{ github.base_ref }}
             else
+              echo "This is probably a push to main or something"
               # Diff with previous commit
               REF=(${{ github.event.base_ref }} ${{ github.event.before }})
             fi
