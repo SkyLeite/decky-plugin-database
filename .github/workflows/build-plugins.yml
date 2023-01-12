@@ -9,7 +9,7 @@ on:
     paths:
       - "plugins/**"
       - ".github/workflows/build-plugins.yml"
-  pull_request_target:
+  pull_request:
     branches: ['*']
   workflow_dispatch:
     inputs:
@@ -38,7 +38,7 @@ jobs:
       - name: Find plugins to be built
         id: find_plugins
         env:
-          isPr: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+          isPr: ${{ github.event_name == 'pull_request' }}
           buildAll: ${{ inputs.build_all }}
         run: |
           echo $isPr
