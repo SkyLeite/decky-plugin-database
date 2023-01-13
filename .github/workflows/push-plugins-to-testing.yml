@@ -53,7 +53,7 @@ jobs:
       run: |
         shopt -s dotglob
         for plugin in ${{ github.workspace }}/plugins/*.zip; do
-          name=$(basename $plugin).zip
+          name=$(basename $plugin)
 
           metadata=$(unzip -p $plugin $name/plugin.json)
           packagejson=$(unzip -p $plugin $name/package.json)
