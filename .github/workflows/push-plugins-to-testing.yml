@@ -15,7 +15,7 @@ jobs:
       name: testing_env
     steps:
     - name: 'Download artifact'
-      uses: actions/github-script@v3.1.0
+      uses: actions/github-script
       with:
         script: |
           const fs = require('fs/promises');
