@@ -51,14 +51,12 @@ jobs:
       if: ${{ !env.ACT }}
       id: upload-plugins
       run: |
-        cd ${{ github.workspace }}/plugins
-        ls -la
         shopt -s dotglob
         for plugin in ${{ github.workspace }}/plugins/*.zip; do
-          zipname=$(basename $plugin).zip
+          name=$(basename $plugin).zip
 
-          metadata=$(unzip -p $zipname $plugin/plugin.json)
-          packagejson=$(unzip -p $zipname $plugin/package.json)
+          metadata=$(unzip -p $plugin $name/plugin.json)
+          packagejson=$(unzip -p $plugin $name/package.json)
 
           donotupload=$(jq -r '.publish | any(.tags[] == "dnu"; .)' <<< $metadata)
           if [[ "$donotupload" == "false" ]]; then
@@ -70,7 +68,7 @@ jobs:
             -F "tags=$(jq -r '.publish.tags|join(",")' <<< $metadata)" \
             -F "version_name=$(jq -r '.version' <<< $packagejson)" \
             -F "image=$(jq -r '.publish.image' <<< $metadata)" \
-            -F "file=@${zipname}" ${STORE_URL}/__submit
+            -F "file=@${plugin}" ${STORE_URL}/__submit
           else
             echo "Plugin is designated as 'do not upload', likely a template or CI demonstration."
           fi
