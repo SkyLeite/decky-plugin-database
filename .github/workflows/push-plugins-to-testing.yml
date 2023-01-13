@@ -7,12 +7,30 @@ on:
       - completed
 
 jobs:
-  upload:
+  find_environment:
     runs-on: ubuntu-latest
     if: >
       github.event.workflow_run.conclusion == 'success'
+    outputs:
+      environment: ${{ steps.find_environment.outputs.environment }}
+    steps:
+      - name: Find environment
+        id: find_environment
+        run: |
+          environment="testing_env"
+
+          if [ ${{ github.ref_name }} == main ]; then
+            environment="env"
+          fi
+
+          echo "environment=$environment" >> $GITHUB_OUTPUT
+
+  upload:
+    needs:
+      - find_environment
+    runs-on: ubuntu-latest
     environment:
-      name: testing_env
+      name: ${{ needs.find_environment.outputs.environment }}
     steps:
     - name: 'Download built plugins'
       uses: actions/github-script@v6
@@ -51,6 +69,7 @@ jobs:
       if: ${{ !env.ACT }}
       id: upload-plugins
       run: |
+        echo "Uploading plugin to ${{ needs.find_environment.outputs.environment }}"
         shopt -s dotglob
         for plugin in ${{ github.workspace }}/plugins/*.zip; do
           name=$(basename $plugin .zip)
