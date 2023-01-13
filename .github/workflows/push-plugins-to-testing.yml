@@ -52,8 +52,8 @@ jobs:
       id: upload-plugins
       run: |
         shopt -s dotglob
-        for plugin in ${{ github.workspace }}/plugins/* do
-          zipname=$(basename ${plugin}).zip
+        for plugin in ${{ github.workspace }}/plugins/*; do
+          zipname=$(basename $plugin).zip
 
           metadata=$(unzip -p $zipname $plugin/plugin.json)
           packagejson=$(unzip -p $zipname $plugin/package.json)
