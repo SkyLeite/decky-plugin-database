@@ -68,7 +68,8 @@ jobs:
             -F "tags=$(jq -r '.publish.tags|join(",")' <<< $metadata)" \
             -F "version_name=$(jq -r '.version' <<< $packagejson)" \
             -F "image=$(jq -r '.publish.image' <<< $metadata)" \
-            -F "file=@${plugin}" ${STORE_URL}/__submit
+            -F "file=@${plugin}" ${STORE_URL}/__submit \
+            -v
           else
             echo "Plugin is designated as 'do not upload', likely a template or CI demonstration."
           fi
