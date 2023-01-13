@@ -15,7 +15,7 @@ jobs:
       name: testing_env
     steps:
     - name: 'Download built plugins'
-      uses: actions/github-script
+      uses: actions/github-script@v6
       with:
         script: |
           const fs = require('fs/promises');
