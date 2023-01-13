@@ -21,7 +21,7 @@ jobs:
           const fs = require('fs/promises');
           const workspace = "${{ github.workspace }}";
 
-          const artifacts = await github.actions.listWorkflowRunArtifacts({
+          const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: ${{ github.event.workflow_run.id }},
