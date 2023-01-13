@@ -51,8 +51,10 @@ jobs:
       if: ${{ !env.ACT }}
       id: upload-plugins
       run: |
+        cd ${{ github.workspace }}/plugins
+        ls -la
         shopt -s dotglob
-        for plugin in ${{ github.workspace }}/plugins/*; do
+        for plugin in ${{ github.workspace }}/plugins/*.zip; do
           zipname=$(basename $plugin).zip
 
           metadata=$(unzip -p $zipname $plugin/plugin.json)
