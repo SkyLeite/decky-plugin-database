@@ -1,4 +1,4 @@
-run-name : Deploy workflow ${{ github.event.workflow_run.name }} (${{ github.event.workflow_run.id }}) by @${{ github.event.workflow_run.actor.login }}
+run-name : Deploy plugins from ${{ github.event.workflow_run.head_repository.name }}/${{ github.event.workflow_run.head_branch }} (Workflow ID ${{ github.event.workflow_run.id }}) by @${{ github.event.workflow_run.actor.login }}
 
 on:
   workflow_run:
