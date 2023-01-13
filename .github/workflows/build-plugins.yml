@@ -56,7 +56,7 @@ jobs:
               REF=(${{ github.ref }} ${{ github.event.before }})
             fi
 
-            PLUGINS=$(git diff --name-only --submodule=diff $REF -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
+            PLUGINS=$(git diff --name-only --submodule=diff ${REF[@]} -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
           fi
 
           echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
