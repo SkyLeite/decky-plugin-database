@@ -66,6 +66,7 @@ jobs:
             PLUGINS=$(find ./plugins -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-1]')
           else
 
+            git fetch --no-recurse-submodules --depth=3 --all
             PLUGINS=$(git diff --name-only --submodule=diff ${REF[@]} -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
           fi
 
