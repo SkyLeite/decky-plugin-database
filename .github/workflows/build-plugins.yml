@@ -68,6 +68,9 @@ jobs:
 
             git fetch --no-recurse-submodules --depth=3 --all
             PLUGINS=$(git diff --name-only --submodule=diff ${REF[@]} -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
+            echo ${REF[@]}
+            git diff --name-only --submodule=diff ${REF[@]} -- plugins
+            echo $PLUGINS
           fi
 
           echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
