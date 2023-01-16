@@ -44,13 +44,13 @@ jobs:
           else
             if [[ $isPr == "true" ]]; then
               # Diff with the ref of the target branch
-              REF=${{ github.base_ref }}
+              REF=(${{ github.head_ref }} ${{ github.base_ref }})
             else
               # Diff with previous commit
-              REF=(${{ github.event.base_ref }} ${{ github.event.before }})
+              REF=(${{ github.ref }} ${{ github.event.before }})
             fi
 
-            PLUGINS=$(git diff --name-only --submodule=diff $REF -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
+            PLUGINS=$(git diff --name-only --submodule=diff ${REF[@]} -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
           fi
 
           echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
