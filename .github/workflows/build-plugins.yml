@@ -25,31 +25,46 @@ jobs:
       plugins: ${{ steps.find_plugins.outputs.plugins }}
     runs-on: ubuntu-latest
     steps:
+      - name: Get Ref
+        id: get_ref
+        env:
+          isPr: ${{ github.event_name == 'pull_request_target' }}
+        run: |
+          if [[ $isPr == "true" ]]; then
+            REF=refs/pull/${{ github.event.number }}/merge
+          else
+            REF=${{ github.ref }}
+          fi
+
+          echo "ref=$REF" >> $GITHUB_OUTPUT
+
       - name: Checkout
         if: ${{ !env.ACT }}
         uses: actions/checkout@8230315d06ad95c617244d2f265d237a1682d445
         with:
-          ref: "refs/pull/${{ github.event.number }}/merge"
+          ref: ${{ steps.get_ref.outputs.ref }}
           fetch-depth: 9
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Find plugins to be built
         id: find_plugins
         env:
-          isPr: ${{ github.event_name == 'pull_request' }}
+          isPr: ${{ github.event_name == 'pull_request_target' }}
         run: |
+          if [[ $isPr == "true" ]]; then
+            # Diff with the ref of the target branch
+            REF=(origin/${{ github.base_ref }})
+          else
+            # Diff with previous commit
+            REF=(${{ github.ref }} ${{ github.event.before }})
+          fi
+
+          git fetch --no-recurse-submodules --depth=3 --all
           workflow_changed=$(git diff --name-only --submodule=diff $REF -- .github/workflows/build-plugins.yml)
           if $workflow_changed; then
             # Workflow changed. Build everything to be safe
             PLUGINS=$(find ./plugins -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-1]')
           else
-            if [[ $isPr == "true" ]]; then
-              # Diff with the ref of the target branch
-              REF=(${{ github.head_ref }} ${{ github.base_ref }})
-            else
-              # Diff with previous commit
-              REF=(${{ github.ref }} ${{ github.event.before }})
-            fi
 
             PLUGINS=$(git diff --name-only --submodule=diff ${REF[@]} -- plugins | xargs -0 -n1 -- basename | jq -Rsc 'split("\n")[:-2]')
           fi
