@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - backend-builder
-      - parallelize-ci
+      - concurrent-plugin-builds
     paths:
       - "plugins/**"
       - ".github/workflows/build-plugins.yml"
@@ -61,6 +61,7 @@ jobs:
     if: ${{ needs.find_plugins.outputs.plugins != '[]' }}
     continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         plugin: ${{ fromJSON(needs.find_plugins.outputs.plugins) }}
     outputs:
@@ -242,6 +243,7 @@ jobs:
     environment:
       name: ${{ (github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.upload))) && 'env' || 'testing_env' }}
     strategy:
+      fail-fast: false
       matrix:
         plugin: ${{ fromJSON(needs.find_plugins.outputs.plugins) }}
     steps:
