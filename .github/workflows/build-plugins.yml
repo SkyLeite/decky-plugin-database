@@ -70,7 +70,7 @@ jobs:
           IFS=' ' read -ra files <<< "${{ steps.list-files.outputs.edited_files }}"
 
           # Download decky
-          curl -L -o decky https://github.com/SteamDeckHomebrew/cli/releases/download/v0.0.1-alpha.1/decky
+          curl -L -o decky https://github.com/SteamDeckHomebrew/cli/releases/download/0.0.1-alpha.4/decky
           chmod +x decky
 
           pushd plugins
