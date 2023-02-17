@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - backend-builder
+      - remove-changed-files-action
     paths:
       - "plugins/**"
       - ".github/workflows/build-plugins.yml"
