@@ -60,7 +60,7 @@ jobs:
         fi
 
         FILES=$(git diff ${REF[@]} --name-only --submodule=diff | jq -Rsc 'split("\n")[:-1] | join (",")')
-        echo "all_changed_filels=$FILES" >> $GITHUB_OUTPUT
+        echo "all_changed_files=$FILES" >> $GITHUB_OUTPUT
 
     - name: Cache Docker images
       if: ${{ !env.ACT }}
