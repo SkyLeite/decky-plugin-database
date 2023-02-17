@@ -37,7 +37,7 @@ jobs:
     - name: Get changed files
       id: changed-files
       env:
-        isPr: ${{ github.event_name == 'pull_request' }}
+        isPr: ${{ github.event_name == 'pull_request_target' }}
         buildAll: ${{ inputs.build_all }}
       run: |
         # Returns a list of paths relative to the git repository of the files that changed
