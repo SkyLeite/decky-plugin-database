@@ -11,6 +11,9 @@
 [submodule "plugins/PowerTools"]
 	path = plugins/PowerTools
 	url = https://github.com/NGnius/PowerTools
+[submodule "plugins/NotPowerTools"]
+	path = plugins/NotPowerTools
+	url = https://github.com/SkyLeite/NotPowerTools
 [submodule "plugins/SDH-CssLoader"]
 	path = plugins/SDH-CssLoader
 	url = https://github.com/suchmememanyskill/SDH-CssLoader
