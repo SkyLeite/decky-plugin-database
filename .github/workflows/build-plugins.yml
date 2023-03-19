@@ -118,6 +118,7 @@ jobs:
           echo "::group::Appending hash to plugin $plugin"
 
           PACKAGE_FILE="plugins/$plugin/package.json"
+          ls -la $PACKAGE_FILE
 
           SHA=$(cut -c1-7 <<< "${{ github.event.pull_request.head.sha || github.sha }}")
           VERSION=$(jq -r '.version' $PACKAGE_FILE)
@@ -126,8 +127,16 @@ jobs:
           echo "::notice::Going from $VERSION to $NEW_VERSION"
 
           tmp=$(mktemp)
+          ls -la $tmp
+
           jq --arg newversion "$NEW_VERSION" '.version = $newversion' $PACKAGE_FILE > $tmp
-          sudo mv $tmp $PACKAGE_FILE
+
+          ls -la $tmp
+
+          mv $tmp $PACKAGE_FILE
+
+          ls -la $PACKAGE_FILE
+          cat $PACKAGE_FILE
 
           echo "::endgroup::"
         done
