@@ -127,7 +127,7 @@ jobs:
 
           tmp=$(mktemp)
           jq --arg newversion "$NEW_VERSION" '.version = $newversion' $PACKAGE_FILE > $tmp
-          mv $tmp $PACKAGE_FILE
+          sudo mv $tmp $PACKAGE_FILE
 
           echo "::endgroup::"
         done
